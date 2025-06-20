@@ -1,6 +1,37 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
+
+
 
 const Login = () => {
+  const navigate = useNavigate();
+  
+    useEffect(() => {
+      const user = localStorage.getItem('user');
+      if (user) {
+        navigate('/dashboard'); 
+      }
+    }, []);
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+     setError('');
+    try {
+      const res = await axios.post('http://localhost:5000/api/login', form);
+      localStorage.setItem('user', JSON.stringify(res.data.user)); // save user info
+      navigate('/dashboard'); // redirect
+    } catch (err) {
+      setError(err.response?.data?.message || 'Login failed');
+    }
+  };
   return (
     <section className="min-h-screen mb-32 bg-gray-100">
       <div class="container sticky top-0 z-sticky">
@@ -19,30 +50,30 @@ const Login = () => {
               </button>
               <div navbar-menu class="items-center flex-grow transition-all duration-500 lg-max:overflow-hidden ease lg-max:max-h-0 basis-full lg:flex lg:basis-auto">
                 <ul class="flex flex-col pl-0 mx-auto mb-0 list-none lg:flex-row xl:ml-auto">
-                  <li>
+                  {/* <li>
                     <a class="flex items-center px-4 py-2 mr-2 font-normal transition-all ease-in-out lg-max:opacity-0 duration-250 text-sm text-slate-700 lg:px-2" aria-current="page" href="../pages/dashboard.html">
                       <i class="mr-1 fa fa-chart-pie opacity-60"></i>
                       Dashboard
                     </a>
-                  </li>
-                  <li>
+                  </li> */}
+                  {/* <li>
                     <a class="block px-4 py-2 mr-2 font-normal transition-all ease-in-out lg-max:opacity-0 duration-250 text-sm text-slate-700 lg:px-2" href="">
                       <i class="mr-1 fa fa-user opacity-60"></i>
                       Profile
                     </a>
-                  </li>
-                  <li>
-                    <a class="block px-4 py-2 mr-2 font-normal transition-all ease-in-out lg-max:opacity-0 duration-250 text-sm text-slate-700 lg:px-2" href="../pages/sign-up.html">
+                  </li> */}
+                  {/* <li>
+                    <Link class="block px-4 py-2 mr-2 font-normal transition-all ease-in-out lg-max:opacity-0 duration-250 text-sm text-slate-700 lg:px-2" to="/register">
                       <i class="mr-1 fas fa-user-circle opacity-60"></i>
                       Sign Up
-                    </a>
-                  </li>
-                  <li>
+                    </Link>
+                  </li> */}
+                  {/* <li>
                     <a class="block px-4 py-2 mr-2 font-normal transition-all ease-in-out lg-max:opacity-0 duration-250 text-sm text-slate-700 lg:px-2" href="../pages/sign-in.html">
                       <i class="mr-1 fas fa-key opacity-60"></i>
                       Sign In
                     </a>
-                  </li>
+                  </li> */}
                 </ul>
                
                 
@@ -64,24 +95,47 @@ const Login = () => {
                     <p class="mb-0">Enter your email and password to sign in</p>
                   </div>
                   <div class="flex-auto p-6">
-                    <form role="form">
-                      <div class="mb-4">
-                        <input type="email" placeholder="Email" class="focus:shadow-primary-outline dark:bg-gray-950 dark:placeholder:text-white/80 dark:text-white/80 text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding p-3 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none" />
-                      </div>
-                      <div class="mb-4">
-                        <input type="password" placeholder="Password" class="focus:shadow-primary-outline dark:bg-gray-950 dark:placeholder:text-white/80 dark:text-white/80 text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding p-3 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none" />
-                      </div>
-                      <div class="flex items-center pl-12 mb-0.5 text-left min-h-6">
-                        <input id="rememberMe" class="mt-0.5 rounded-10 duration-250 ease-in-out after:rounded-circle after:shadow-2xl after:duration-250 checked:after:translate-x-5.3 h-5 relative float-left -ml-12 w-10 cursor-pointer appearance-none border border-solid border-gray-200 bg-zinc-700/10 bg-none bg-contain bg-left bg-no-repeat align-top transition-all after:absolute after:top-px after:h-4 after:w-4 after:translate-x-px after:bg-white after:content-[''] checked:border-blue-500/95 checked:bg-blue-500/95 checked:bg-none checked:bg-right" type="checkbox" />
-                        <label class="ml-2 font-normal cursor-pointer select-none text-sm text-slate-700" for="rememberMe">Remember me</label>
-                      </div>
-                      <div class="text-center">
-                        <button type="button" class="inline-block w-full px-16 py-3.5 mt-6 mb-0 font-bold leading-normal text-center text-white align-middle transition-all bg-blue-500 border-0 rounded-lg cursor-pointer hover:-translate-y-px active:opacity-85 hover:shadow-xs text-sm ease-in tracking-tight-rem shadow-md bg-150 bg-x-25">Sign in</button>
-                      </div>
-                    </form>
+                    <form role="form" onSubmit={handleSubmit}>
+                       {error && (
+                        <div className="mb-4 text-red-600 font-medium bg-red-100 px-4 py-2 rounded">
+                        {error}
+                        </div>
+                    )}
+                        <div className="mb-4">
+                          <input
+                            type="email"
+                            name="email"
+                            placeholder="Email"
+                            value={form.email}
+                            onChange={handleChange}
+                            required
+                            className="focus:shadow-primary-outline text-sm block w-full rounded-lg border p-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            value={form.password}
+                            onChange={handleChange}
+                            required
+                            className="focus:shadow-primary-outline text-sm block w-full rounded-lg border p-3 text-gray-700 transition-all placeholder:text-gray-500 focus:border-fuchsia-300 focus:outline-none"
+                          />
+                        </div>
+                     
+                        <div className="text-center">
+                          <button
+                            type="submit"
+                            className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-lg hover:bg-blue-600"
+                          >
+                            Sign in
+                          </button>
+                        </div>
+                      </form>
                   </div>
                   <div class="border-black/12.5 rounded-b-2xl border-t-0 border-solid p-6 text-center pt-0 px-1 sm:px-6">
-                    <p class="mx-auto mb-6 leading-normal text-sm">Don't have an account? <a href="../pages/sign-up.html" class="font-semibold text-transparent bg-clip-text bg-gradient-to-tl from-blue-500 to-violet-500">Sign up</a></p>
+                    <p class="mx-auto mb-6 leading-normal text-sm">Don't have an account? <Link to="/register" class="font-semibold text-transparent bg-clip-text bg-gradient-to-tl from-blue-500 to-violet-500">Sign up</Link></p>
                   </div>
                 </div>
               </div>

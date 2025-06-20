@@ -3,14 +3,17 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
+import Register from "./pages/Register";
+import { RoutesPath } from "./constants/route_paths";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path={RoutesPath.LOGIN} element={<Login />} />
+        <Route path={RoutesPath.REGISTER} element={<Register />} />
+        <Route path={RoutesPath.PROFILE} element={<Profile />} />
+        <Route path={RoutesPath.DASHBOARD} element={<Dashboard />} />
       </Routes>
     </Router>
   );
