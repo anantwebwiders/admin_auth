@@ -1,31 +1,21 @@
 const authService = require('../services/authService');
+const { sendSuccess, sendError } = require('../utils/helper');
 
 exports.registerUser = async (req, res) => {
   try {
-    
-    const result = await authService.register(req.body, req.file);
+    return await authService.register(req.body, req.file, res); 
 
-    if (!result.success) {
-      return res.status(400).json({ message: result.message });
-    }
-
-  
-    return res.status(200).json({ message: result.message });
   } catch (error) {
     console.error('Register Error:', error);
-    return res.status(500).json({ message: 'Internal Server Error', error: error.message, status: 0 , data: null });
+    return sendError(res, 'Internal Server Error', error.message, 500);
   }
 };
 
 exports.login = async (req, res) => {
-  try{
-    const result = await authService.loginUser(req.body);
-    if (!result.success) {
-      return res.status(400).json({ message: result.message });
-    }
-    return res.status(200).json({ message: result.message, user: result.user });
+  try {
+     return await authService.loginUser(req.body, res); 
   } catch (error) {
     console.error('Login Error:', error);
-    return res.status(500).json({ message: 'Internal Server Error' });
+    return sendError(res, 'Internal Server Error', process.env.NODE_ENV === 'development' ? error.message : undefined, 500);
   }
 };

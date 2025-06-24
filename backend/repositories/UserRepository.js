@@ -1,16 +1,20 @@
-// repositories/UserRepository.js
 const BaseRepository = require('./BaseRepository');
 const User = require('../models/UserModel');
 
 class UserRepository extends BaseRepository {
-    constructor() {
-        super(User);
-    }
+  constructor() {
+    super(User);
+    console.log('UserRepository initialized with model:', this.model.name);
+  }
 
-    // Add any custom User-specific methods
-    async findByEmail(email) {
-        return await this.model.findOne({ email });
-    }
+  async findByEmail(email) {
+    return await this.model.findOne({
+      where: { email },
+      attributes: { include: ['password'] }
+    });
+  }
 }
+
+
 
 module.exports = new UserRepository();

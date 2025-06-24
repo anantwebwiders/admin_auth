@@ -1,69 +1,83 @@
 const { ExpressValidator } = require('express-validator');
-const UserModel = require('../models/UserModel');
-const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const UserRepository = require('../repositories/UserRepository');
+const { sendSuccess, sendError } = require('../utils/helper');
 
-exports.register = async (userData, file) => {
+exports.register = async (userData, file, res) => {
   try {
     const { name, email, mobile, gender, password, confirmPassword } = userData;
 
-    // ✅ Validate Fields (can also be handled with express-validator)
-    if (!name) return { success: false, message: 'Name is required' };
-    if (!email) return { success: false, message: 'Email is required' };
-    if (!mobile) return { success: false, message: 'Mobile number is required' };
-    if (!gender) return { success: false, message: 'Gender is required' };
-    if (!password) return { success: false, message: 'Password is required' };
-    if (password !== confirmPassword) return { success: false, message: 'Passwords do not match' };
+    if (!name) return sendError(res, 'Name is required', null, 400);
+    if (!email) return sendError(res, 'Email is required', null, 400);
+    if (!password) return sendError(res, 'Password is required', null, 400);
+    if (password !== confirmPassword) return sendError(res, 'Passwords do not match', null, 400);
 
-    // ✅ Check if user already exists
     const existingUser = await UserRepository.findByEmail(email);
     if (existingUser) {
-      return { success: false, message: 'Email already exists' };
+      return sendError(res, 'Email already exists', 'Duplicate Email', 409);
     }
 
-    // ✅ Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // ✅ Prepare user object
-    const userPayload = {
+    const newUser = await UserRepository.create({
       name,
       email,
-      mobile,
-      gender,
+      mobile: mobile || null,
+      gender: gender || null,
       password: hashedPassword,
-      profile: file ? file.filename : null // Assuming multer is used and `filename` is available
-    };
+      profile: file ? file.filename : null
+    });
 
-    // ✅ Save user via BaseRepository
-    const newUser = await UserRepository.create(userPayload);
-
-    return { success: true, message: 'User registered successfully', data: newUser };
+    return sendSuccess(res, 'User registered successfully', {
+      id: newUser.id,
+      name: newUser.name,
+      email: newUser.email,
+      profile: newUser.profile
+    });
 
   } catch (error) {
-    console.error('Registration Error:', error);
-    return { success: false, message: 'Something went wrong', error };
+    console.error('Register Service Error:', error);
+    return sendError(res, 'Registration failed', error.message, 500);
   }
 };
 
 
+exports.loginUser = async (userData, res) => {
+  try {
+    const { email, password } = userData;
 
-exports.loginUser = async (userData) => {
-  const { email, password } = userData;
+    if (!email) return sendError(res, 'Email is required', null, 400);
+    if (!password) return sendError(res, 'Password is required', null, 400);
 
-  if (!email) return { success: false, message: 'Email is required' };
-  if (!password) return { success: false, message: 'Password is required' };
+    const user = await UserRepository.findByEmail(email);
+    if (!user) return sendError(res, 'Invalid email or password', null, 401);
 
-  return new Promise((resolve, reject) => {
-    UserModel.getUserByEmail(email, (err, user) => {
-      if (err) return reject(err);
-      if (!user) return resolve({ success: false, message: 'Invalid email or password' });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return sendError(res, 'Invalid email or password', null, 401);
 
-      bcrypt.compare(password, user.password, (err, isMatch) => {
-        if (err) return reject(err);
-        if (!isMatch) return resolve({ success: false, message: 'Invalid email or password' });
+    const token = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+        name: user.name
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
-        resolve({ success: true, message: 'Login successful', user });
-      });
-    });
-  });
+    const userDataToReturn = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      profile: user.profile,
+      token
+    };
+
+    return sendSuccess(res, 'Login successful', userDataToReturn);
+
+  } catch (error) {
+    console.error('Login Service Error:', error);
+    return sendError(res, 'Login failed', error.message, 500);
+  }
 };

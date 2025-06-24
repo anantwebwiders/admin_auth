@@ -1,27 +1,40 @@
+// models/UserModel.js
+const { DataTypes } = require('sequelize');
 const db = require('../config/db');
 
-const createUser = (name, email, mobile, gender, password, callback) => {
-  const query = 'INSERT INTO users (name, email, mobile, gender, password) VALUES (?, ?, ?, ?, ?)';
-  db.query(query, [name, email, mobile, gender, password], callback);
-};
+const User = db.define('User', {
+  // Model attributes
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  mobile: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  gender: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  profile: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
+}, {
+  tableName: 'users', // must match your migration table name
+  timestamps: true, // adds createdAt and updatedAt
+});
 
-const findUserByEmail = (email, callback) => {
-  const query = 'SELECT * FROM users WHERE email = ?';
-  db.query(query, [email], callback);
-};
+// Test the model
 
 
-const getUserByEmail = (email, callback) => {
-  const query = 'SELECT * FROM users WHERE email = ?';
-  db.query(query, [email], (err, results) => {
-    if (err) return callback(err);
-    if (results.length === 0) return callback(null, null); // user not found
-    return callback(null, results[0]); // found user
-  });
-};
-
-module.exports = {
-  createUser,
-  findUserByEmail,
-  getUserByEmail
-};
+module.exports = User;
