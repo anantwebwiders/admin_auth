@@ -1,17 +1,20 @@
 const jwt = require('jsonwebtoken');
-const config = require('../config');
+const { sendError } = require('../utils/helper'); // ✅ Import helper
 
 module.exports = (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
-    if (!token) {
-      return res.status(401).json({ success: false, message: 'Authentication failed' });
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return sendError(res, 'Authentication failed', 'No token provided', 401);
     }
 
-    const decoded = jwt.verify(token, config.jwtSecret);
+    const token = authHeader.split(' ')[1];
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
     req.userData = decoded;
     next();
   } catch (error) {
-    return res.status(401).json({ success: false, message: 'Authentication failed' });
+    return sendError(res, 'Authentication failed', error.message, 401);
   }
 };

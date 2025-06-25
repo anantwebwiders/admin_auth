@@ -1,43 +1,78 @@
-const userService = require('../services/userService');
+const userService = require('../services/userService'); // service object (must export updateProfile)
+const { storeFile } = require('../services/userService'); // individual function from same file
+const { sendSuccess, sendError } = require('../utils/helper');
 
+// ⬇️ Upload File Controller
 const uploadFile = async (req, res) => {
   try {
+    const uploadPath = req.body.path || 'uploads/default';
+
     if (!req.file) {
-      return res.status(400).json({ 
-        status: 0,
-        message: 'No file uploaded',
-        data: null
-      });
+      return sendError(res, 'No file uploaded', 'File missing in request', 400);
     }
 
-    // Get path from request (body or query)
-    const customPath = req.body.path || req.query.path || 'uploads';
-    
-    // Store file using service
-    const fileInfo = await userService.storeFile(req.file, customPath);
+    const result = await storeFile(req.file, uploadPath);
 
-    return res.status(200).json({
-      status: 1,
-      message: 'File uploaded successfully',
-      data: {
-        filename: fileInfo.filename,
-        originalname: fileInfo.originalname,
-        path: fileInfo.path,
-        size: fileInfo.size,
-        mimetype: fileInfo.mimetype,
-        url: `/uploads/${fileInfo.path}/${fileInfo.filename}` // Example URL
-      }
-    });
+    if (result.status !== 1) {
+      return sendError(res, result.message, result.error, 400);
+    }
+
+    return sendSuccess(res, result.message, result.data);
   } catch (error) {
-    console.error('Error uploading file:', error);
-    return res.status(500).json({ 
-      status: 0,
-      message: error.message || 'File upload failed',
-      data: null
-    });
+    console.error('Upload error:', error);
+    return sendError(res, 'Something went wrong', error.message, 500);
   }
 };
 
+// ⬇️ Update Profile Controller
+const updateProfile = async (req, res) => {
+  try {
+    const userId = req.userData?.id;
+
+    if (!userId) {
+      return sendError(res, 'Unauthorized', 'User ID not found in token', 401);
+    }
+
+    return await userService.updateProfile(res, userId, req.body);
+
+    
+  } catch (error) {
+    console.error('Update Profile Error:', error);
+    return sendError(res, 'Something went wrong', error.message, 500);
+  }
+};
+
+const forgetPassword = async (req, res) => {
+  try {
+    if (!req.body.email) {
+      return sendError(res, 'Email is required', 'Email missing in request', 400);
+    }
+    return await userService.forgetPassword(req.body, res);
+  } catch (error) {
+    console.error('Forget Password Error:', error);
+    return sendError(res, 'Something went wrong', error.message, 500);
+  }
+}
+
+const resetPassword = async (req, res) => {
+  try {
+     const userId = req.userData?.id;
+
+    if (!userId) {
+      return sendError(res, 'Unauthorized', 'User ID not found in token', 401);
+    }
+
+    return await userService.resetPassword(res, userId, req.body);
+    
+  } catch (error) {
+    console.error('Reset Password Error:', error);
+    return sendError(res, 'Something went wrong', error.message, 500);
+  }
+}
+
 module.exports = {
-  uploadFile
+  uploadFile,
+  updateProfile,
+  forgetPassword,
+  resetPassword
 };
