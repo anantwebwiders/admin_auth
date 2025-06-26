@@ -26,7 +26,7 @@ const Login = () => {
     e.preventDefault();
      setError('');
     try {
-     const res = await axios.post(ApiUrls.LOGIN+"/login", form, {
+     const res = await axios.post(ApiUrls.LOGIN, form, {
   headers: {
     "Content-Type": "application/json"
   },
