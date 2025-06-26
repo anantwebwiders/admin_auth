@@ -6,10 +6,9 @@ const app = express();
 
 // CORS config
 app.use(cors({
-  origin: 'http://localhost:3000', // specific frontend origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
+  origin: 'https://3.110.221.225',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
 }));
 
 app.options('*', cors()); // <--- IMPORTANT for preflight
