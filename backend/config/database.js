@@ -14,4 +14,4 @@ module.exports = {
   production: {
     // production environment config
   }
-};
+}; 

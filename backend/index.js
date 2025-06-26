@@ -6,7 +6,7 @@ const app = express();
 
 // CORS config
 app.use(cors({
-  origin: 'https://3.110.221.225',
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
