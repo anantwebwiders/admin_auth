@@ -11,7 +11,7 @@ const Register = () => {
       useEffect(() => {
         const user = localStorage.getItem('user');
         if (user) {
-          navigate('/dashboard');
+         
         }
       }, []);
      const [form, setForm] = useState({
