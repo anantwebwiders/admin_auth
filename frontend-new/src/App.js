@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
@@ -10,9 +10,12 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Redirect from / to /login */}
+        {/* <Route path="/" element={<Navigate to={RoutesPath.LOGIN} />} /> */}
+        <Route path="/" element={<Login />} />
         <Route path={RoutesPath.LOGIN} element={<Login />} />
         <Route path={RoutesPath.REGISTER} element={<Register />} />
-        <Route path={RoutesPath.PROFILE} element={<Profile />} />
+        <Route path={RoutesPath.PROFILE} element={<Profile />} /> 
         <Route path={RoutesPath.DASHBOARD} element={<Dashboard />} />
       </Routes>
     </Router>

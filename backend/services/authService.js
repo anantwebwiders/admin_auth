@@ -1,7 +1,7 @@
 const { ExpressValidator } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-const UserRepository = require('../repositories/UserRepository');
+const UserRepository = require('../repositories/userRepository');
 const { sendSuccess, sendError } = require('../utils/helper');
 
 exports.register = async (userData, file, res) => {

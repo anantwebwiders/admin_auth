@@ -1,0 +1,32 @@
+# Node.js
+node_modules/
+.env
+npm-debug.log*
+
+# Build
+# frontend-new/build/
+frontend/dist/
+
+# Logs
+logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# PM2 logs (if any)
+*.pid
+*.seed
+*.pid.lock
+
+# Database backups
+*.sql
+*.sqlite
+
+# uploads or temporary storage
+backend/uploads/
