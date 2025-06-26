@@ -26,7 +26,7 @@ const Login = () => {
     e.preventDefault();
      setError('');
     try {
-     const res = await axios.post("http://3.110.221.225:5000/api/login", form, {
+     const res = await axios.post("/api/login", form, {
   headers: {
     "Content-Type": "application/json"
   },
