@@ -6,12 +6,7 @@ const Dashboard = () => {
     const navigate = useNavigate();
   const [userName, setUserName] = useState('');
 
-  useEffect(() => {
-    const user = localStorage.getItem('user');
-    if (!user) {
-      navigate('/register');
-    } 
-  }, []);
+  
   return (
     <Layout>
       <main class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68 rounded-xl">
