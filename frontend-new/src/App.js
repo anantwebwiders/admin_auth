@@ -10,6 +10,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element={<Login />} />
         <Route path={RoutesPath.LOGIN} element={<Login />} />
         <Route path={RoutesPath.REGISTER} element={<Register />} />
         <Route path={RoutesPath.PROFILE} element={<Profile />} />
