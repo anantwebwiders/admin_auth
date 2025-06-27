@@ -1,34 +1,113 @@
 import React,{ useState,  useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { ApiUrls } from '../constants/api_urls';
+import { fetchUserData } from "../services/authService";
+
 
 const Profile = () => {
-   const navigate = useNavigate();
-    const [user, setUser] = useState(null);
-    const [firstName, setFirstName] = useState('');
+  const navigate = useNavigate();
+const [user, setUser] = useState(null);
+const [form, setForm] = useState({
+  name: '',
+  email: '',
+  mobile: '',
+  gender: '',
+  about: '',
+  profile: null,
+});
+const [firstName, setFirstName] = useState('');
 const [lastName, setLastName] = useState('');
-  
-  
-   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
-    const storedUser = localStorage.getItem('auth_user');
-  
-    if (!token) {
-      navigate('/login');
-      return; // stop further execution
-    }
-  
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
+const [errors, setErrors] = useState({});
+const [success, setSuccess] = useState('');
+
+// ✅ Check auth + set user
+useEffect(() => {
+  const token = localStorage.getItem('auth_token');
+  const storedUser = localStorage.getItem('auth_user');
+
+  if (!token) {
+    navigate('/login');
+    return;
+  }
+
+  if (storedUser) {
+    const parsedUser = JSON.parse(storedUser);
     setUser(parsedUser);
 
-    if (parsedUser.name) {
-      const nameParts = parsedUser.name.trim().split(' ');
-      setFirstName(nameParts[0]);
-      setLastName(nameParts.slice(1).join(' '));
+    // ✅ Set form values now
+    setForm({
+      name: parsedUser.name || '',
+      email: parsedUser.email || '',
+      mobile: parsedUser.mobile || '',
+      gender: parsedUser.gender || '',
+      about: parsedUser.about || '',
+      profile: null,
+    });
+
+    // Optional name split
+    const nameParts = parsedUser.name.trim().split(' ');
+    setFirstName(nameParts[0]);
+    setLastName(nameParts.slice(1).join(' '));
+  }
+}, []);
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setForm({ ...form, [name]: value });
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // ✅ Client-side validation (example)
+  let tempErrors = {};
+  if (!form.name.trim()) tempErrors.name = 'Name is required';
+  if (!form.email.trim()) tempErrors.email = 'Email is required';
+  if (!form.mobile.trim()) tempErrors.mobile = 'Mobile is required';
+  if (!form.gender) tempErrors.gender = 'Please select gender';
+
+  if (Object.keys(tempErrors).length) {
+    setErrors(tempErrors);
+    return;
+  }
+
+  setErrors({});
+  try {
+    const formData = new FormData();
+    Object.entries(form).forEach(([key, val]) => {
+      if (val) formData.append(key, val);
+    });
+
+  const res = await axios.put(ApiUrls.UPDATE_PROFILE, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${localStorage.getItem('auth_token')}`,
+      },
+    });
+     
+        fetchUserData(setUser); 
+     
+        setSuccess(res.data.message);
+
+  } catch (err) {
+    console.error(err);
+    if (err.response?.data?.error && Array.isArray(err.response.data.error)) {
+      const errorMap = {};
+      err.response.data.error.forEach((e) => {
+        if (!errorMap[e.field]) {
+          errorMap[e.field] = e.message;
+        }
+      });
+      setErrors(errorMap);
+    } else {
+      setErrors({
+        general: err.response?.data?.message || 'Something went wrong!',
+      });
     }
-    }
-  }, []);
+  }
+};
+
   
     return (
 <Layout> <div class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68">
@@ -205,75 +284,131 @@ const [lastName, setLastName] = useState('');
                   <button type="button" class="inline-block px-8 py-2 mb-4 ml-auto font-bold leading-normal text-center text-white align-middle transition-all ease-in bg-blue-500 border-0 rounded-lg shadow-md cursor-pointer text-xs tracking-tight-rem hover:shadow-xs hover:-translate-y-px active:opacity-85">Settings</button>
                 </div>
               </div>
-              <div class="flex-auto p-6">
-                <p class="leading-normal uppercase dark:text-white dark:opacity-60 text-sm">User Information</p>
-                <div class="flex flex-wrap -mx-3">
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0">
-                    <div class="mb-4">
-                      <label for="username" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Username</label>
-                      <input type="text" name="username" value={user?.name} class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    </div>
-                  </div>
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0">
-                    <div class="mb-4">
-                      <label for="email" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Email address</label>
-                      <input type="email" name="email" value={user?.email} class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    </div>
-                  </div>
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0">
-                    <div class="mb-4">
-                      <label for="first name" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">First name</label>
-                      <input type="text" name="first name" value={firstName} class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    </div>
-                  </div>
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-6/12 md:flex-0">
-                    <div class="mb-4">
-                      <label for="last name" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Last name</label>
-                      <input type="text" name="last name" value={lastName} class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    </div>
-                  </div>
-                </div>
-                <hr class="h-px mx-0 my-4 bg-transparent border-0 opacity-25 bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent " />
-                
-                <p class="leading-normal uppercase dark:text-white dark:opacity-60 text-sm">Contact Information</p>
-                <div class="flex flex-wrap -mx-3">
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-full md:flex-0">
-                    <div class="mb-4">
-                      <label for="address" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Address</label>
-                      <input type="text" name="address" value={user?.mobile} class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    </div>
-                  </div>
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-4/12 md:flex-0">
-                    <div class="mb-4">
-                      <label for="city" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">City</label>
-                      <input type="text" name="city" value="New York" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    </div>
-                  </div>
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-4/12 md:flex-0">
-                    <div class="mb-4">
-                      <label for="country" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Country</label>
-                      <input type="text" name="country" value="United States" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    </div>
-                  </div>
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-4/12 md:flex-0">
-                    <div class="mb-4">
-                      <label for="postal code" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">Postal code</label>
-                      <input type="text" name="postal code" value="437300" class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    </div>
-                  </div>
-                </div>
-                <hr class="h-px mx-0 my-4 bg-transparent border-0 opacity-25 bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent " />
+              <form role="form text-left" onSubmit={handleSubmit} style={{ margin: '40px' }}>
+  {success && (
+    <div className="mb-4 text-green-600 font-medium bg-green-100 px-4 py-2 rounded">
+      {success}
+    </div>
+  )}
 
-                <p class="leading-normal uppercase dark:text-white dark:opacity-60 text-sm">About me</p>
-                <div class="flex flex-wrap -mx-3">
-                  <div class="w-full max-w-full px-3 shrink-0 md:w-full md:flex-0">
-                    <div class="mb-4">
-                      <label for="about me" class="inline-block mb-2 ml-1 font-bold text-xs text-slate-700 dark:text-white/80">About me</label>
-                      <input type="text" name="about me" value="A beautiful Dashboard for Bootstrap 5. It is Free and Open Source." class="focus:shadow-primary-outline dark:bg-slate-850 dark:text-white text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding px-3 py-2 font-normal text-gray-700 outline-none transition-all placeholder:text-gray-500 focus:border-blue-500 focus:outline-none" />
-                    </div>
-                  </div>
-                </div>
-              </div>
+  {/* Name */}
+  <div className="mb-4">
+    <input
+      type="text"
+      name="name"
+      placeholder="Name"
+      value={form.name}
+      onChange={handleChange}
+      className="placeholder:text-gray-500 text-sm block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-gray-700 focus:border-blue-500 focus:outline-none"
+      aria-label="Name"
+    />
+    {errors.name && (
+      <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+    )}
+  </div>
+  <div className="mb-4">
+    <input
+      type="text"
+      name="email"
+      placeholder="email"
+      value={form.email}
+      onChange={handleChange}
+      className="placeholder:text-gray-500 text-sm block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-gray-700 focus:border-blue-500 focus:outline-none"
+      aria-label="Email"
+    />
+    {errors.email && (
+      <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+    )}
+  </div>
+
+  {/* Mobile Number */}
+  <div className="mb-4">
+    <input
+      type="text"
+      name="mobile"
+      placeholder="Mobile Number"
+      value={form.mobile}
+      onChange={handleChange}
+      className="placeholder:text-gray-500 text-sm block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-gray-700 focus:border-blue-500 focus:outline-none"
+      aria-label="Mobile Number"
+    />
+    {errors.mobile && (
+      <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>
+    )}
+  </div>
+
+  {/* Gender */}
+  <div className="mb-4">
+    <label className="block mb-1 text-sm font-medium text-gray-700">
+      Gender:
+    </label>
+    <div className="flex gap-4">
+      <label>
+        <input
+          type="radio"
+          name="gender"
+          value="male"
+          checked={form.gender === 'male'}
+          onChange={handleChange}
+        />
+        <span className="ml-2 text-sm">Male</span>
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="gender"
+          value="female"
+          checked={form.gender === 'female'}
+          onChange={handleChange}
+        />
+        <span className="ml-2 text-sm">Female</span>
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="gender"
+          value="other"
+          checked={form.gender === 'other'}
+          onChange={handleChange}
+        />
+        <span className="ml-2 text-sm">Other</span>
+      </label>
+    </div>
+    {errors.gender && (
+      <p className="text-red-500 text-sm mt-1">{errors.gender}</p>
+    )}
+  </div>
+
+  {/* Profile Picture */}
+  <div className="mb-4">
+    <label className="block mb-1 text-sm font-medium text-gray-700">
+      Profile Picture:
+    </label>
+    <input
+      type="file"
+      name="profile"
+      accept="image/*"
+      onChange={(e) =>
+        setForm({ ...form, profile: e.target.files[0] })
+      }
+      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+    />
+  </div>
+
+  {/* Bio or About Me */}
+
+
+  {/* Submit Button */}
+  <div className="text-center">
+    <button
+      type="submit"
+      className="w-full px-5 py-2.5 mt-6 mb-2 font-bold text-white rounded-lg bg-gradient-to-tl from-zinc-800 to-zinc-700 hover:bg-slate-700 transition-all"
+    >
+      Update Profile
+    </button>
+  </div>
+</form>
+
             </div>
           </div>
           <div class="w-full max-w-full px-3 mt-6 shrink-0 md:w-4/12 md:flex-0 md:mt-0">

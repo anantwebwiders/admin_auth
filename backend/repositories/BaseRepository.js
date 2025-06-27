@@ -27,7 +27,9 @@ class BaseRepository {
 
   async findById(id, res = null) {
     try {
-      return await this.model.findByPk(id); // Sequelize method
+      return await this.model.findByPk(id,{
+         attributes: { exclude: ['password'] } 
+      }); // Sequelize method
     } catch (error) {
       console.error('BaseRepository.findById Error:', error);
       if (res) return sendError(res, 'Error fetching record by ID', error.message);

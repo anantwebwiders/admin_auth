@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -7,9 +7,17 @@ import Register from "./pages/Register";
 import FORGET_PASSWORD from "./pages/Forget_Password";
 import RESET_PASSWORD from "./pages/Reset_Password";
 import { RoutesPath } from "./constants/route_paths";
+import axios from "axios";
+import { fetchUserData } from "./services/authService";
 
 function App() {
+     const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetchUserData(setUser); 
+  }, []);
   return (
+
     <Router>
       <Routes>
         {/* Redirect from / to /login */}

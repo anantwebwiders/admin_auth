@@ -71,6 +71,8 @@ exports.loginUser = async (userData, res) => {
       name: user.name,
       email: user.email,
       profile: user.profile,
+      mobile: user.mobile,
+      gender: user.gender,
       token
     };
 

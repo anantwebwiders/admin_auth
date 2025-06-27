@@ -8,5 +8,7 @@ export const ApiUrls = {
     HOME: "/",
     NOT_FOUND: "*",
     FORGET_PASSWORD: `${baseurl}/forget-password`,
-    RESET_PASSWORD: `${baseurl}/reset-password`
+    RESET_PASSWORD: `${baseurl}/reset-password`,
+    AUTH_USER: `${baseurl}/me`,
+    UPDATE_PROFILE: `${baseurl}/update-profile`
 }   
