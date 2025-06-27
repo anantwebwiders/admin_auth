@@ -9,7 +9,7 @@ const Login = () => {
   const navigate = useNavigate();
   
     useEffect(() => {
-      const user = localStorage.getItem('user');
+      const user = localStorage.getItem('auth_token');
       if (user) {
         navigate('/dashboard'); 
       }
