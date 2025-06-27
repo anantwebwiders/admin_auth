@@ -18,8 +18,7 @@ const createUserValidator = [
     .isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
     
   body('profile')
-    .optional()
-    .isString().withMessage('Profile must be a string'),
+    .notEmpty().withMessage('Profile is required'),
     
   body('mobile')
     .notEmpty().withMessage('Mobile number is required')

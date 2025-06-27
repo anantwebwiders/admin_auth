@@ -22,12 +22,14 @@ const Register = () => {
       gender: '',
       password: '',
       confirmPassword: '',
-      profile: null,
+      profile: '',
+      terms: false
       });
 
   const [errors, setErrors] = useState({});
 
   const [success, setSuccess] = useState('');
+  const [preview, setPreview] = useState(null);
 
   const validateForm = () => {
   const newErrors = {};
@@ -59,6 +61,14 @@ const Register = () => {
   } else if (form.password.length < 6) {
     newErrors.password = 'Password must be at least 6 characters';
   }
+
+  if (!form.profile) {
+    newErrors.profile = 'Profile is required';
+  }
+
+  if (form.terms == false) {
+    newErrors.terms = 'Please accept terms and conditions';
+  } 
 
   if (!form.confirmPassword) {
     newErrors.confirmPassword = 'Confirm password is required';
@@ -152,11 +162,22 @@ const handleSubmit = async (e) => {
 
 
  
-  useEffect(() => {
-    if (success) {
-      setForm({ name: '', email: '', password: '' , mobile: '', gender: '', confirmPassword: '', profile: null });
-    }
-  }, [success]);
+ useEffect(() => {
+  if (success) {
+    setForm({
+      name: '',
+      email: '',
+      password: '',
+      mobile: '',
+      gender: '',
+      confirmPassword: '',
+      profile: null,
+    });
+
+    setPreview(null); // 👈 Clear image preview on success
+  }
+}, [success]);
+
     return (
              <section class="m-0 font-sans antialiased font-normal bg-white text-start text-base leading-default text-slate-500">
     <nav class="absolute top-0 z-30 flex flex-wrap items-center justify-between w-full px-4 py-2 mt-6 mb-4 shadow-none lg:flex-nowrap lg:justify-start">
@@ -326,9 +347,33 @@ const handleSubmit = async (e) => {
                   {/* Profile Picture */}
                   <div className="mb-4">
                     <label className="block mb-1 text-sm font-medium text-gray-700">Profile Picture:</label>
-                    <input type="file" name="profile" accept="image/*" onChange={(e) => setForm({ ...form, profile: e.target.files[0] })}
-                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+                    <input
+                      type="file"
+                      name="profile"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setForm({ ...form, profile: file });
+                          setPreview(URL.createObjectURL(file));
+                        }
+                      }}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                    {errors.profile && <p className="text-red-500 text-sm mt-1">{errors.profile}</p>}
+
+                    {/* ✅ Image Preview */}
+                    {preview && (
+                      <div className="mt-4">
+                        <img
+                          src={preview}
+                          alt="Profile Preview"
+                          className="w-24 h-24 object-cover border-2 border-gray-300"
+                        />
+                      </div>
+                    )}
                   </div>
+
 
                   {/* Password */}
                   <div className="mb-4">
@@ -348,8 +393,16 @@ const handleSubmit = async (e) => {
 
                   {/* Terms and Conditions */}
                   <div className="min-h-6 pl-7 mb-0.5 block">
-                    <input className="w-4.8 h-4.8 cursor-pointer" type="checkbox" />
+                    <input
+  className="..."
+  type="checkbox"
+  name="terms"
+  checked={form.terms || false}
+  onChange={(e) => setForm({ ...form, terms: e.target.checked })}
+/>
+
                     <label className="ml-2 font-normal text-sm text-slate-700"> I agree to the <a href="javascript:;" className="font-bold">Terms and Conditions</a> </label>
+                    {errors.terms && <p className="text-red-500 text-sm mt-1">{errors.terms}</p>}
                   </div>
 
                   {/* Submit Button */}
