@@ -6,7 +6,7 @@ const { sendSuccess, sendError } = require('../utils/helper');
 
 exports.register = async (userData, file, res) => {
   try {
-    const { name, email, mobile, gender, password, confirmPassword } = userData;
+    const { name, email, mobile, gender, password, confirmPassword, profile } = userData;
 
     if (!name) return sendError(res, 'Name is required', null, 400);
     if (!email) return sendError(res, 'Email is required', null, 400);
@@ -26,7 +26,7 @@ exports.register = async (userData, file, res) => {
       mobile: mobile || null,
       gender: gender || null,
       password: hashedPassword,
-      profile: file ? file.filename : null
+      profile: profile || null
     });
 
     return sendSuccess(res, 'User registered successfully', {

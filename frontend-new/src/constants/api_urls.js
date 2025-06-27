@@ -10,5 +10,6 @@ export const ApiUrls = {
     FORGET_PASSWORD: `${baseurl}/forget-password`,
     RESET_PASSWORD: `${baseurl}/reset-password`,
     AUTH_USER: `${baseurl}/me`,
-    UPDATE_PROFILE: `${baseurl}/update-profile`
+    UPDATE_PROFILE: `${baseurl}/update-profile`,
+    UPLOAD: `${baseurl}/upload`
 }   

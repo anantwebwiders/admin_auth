@@ -108,7 +108,10 @@ const handleSubmit = async (e) => {
   }
 };
 
-  
+  const profileImageSrc = user?.profile
+  ? `http://localhost:5000/${user.profile.replace(/\\/g, '/')}` // 👈 Windows \ to / fix
+  : '/assets/img/team-2.jpg'; // 👈 default fallback image
+
     return (
 <Layout> <div class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68">
       <nav class="absolute z-20 flex flex-wrap items-center justify-between w-full px-6 py-2 -mt-56 text-white transition-all ease-in shadow-none duration-250 lg:flex-nowrap lg:justify-start" navbar-profile navbar-scroll="true">
@@ -375,7 +378,7 @@ const handleSubmit = async (e) => {
   </div>
 
   {/* Profile Picture */}
-  <div className="mb-4">
+  <div className="mb-4" style={{ display: 'none', }}>
     <label className="block mb-1 text-sm font-medium text-gray-700">
       Profile Picture:
     </label>
@@ -413,7 +416,7 @@ const handleSubmit = async (e) => {
                 <div class="w-4/12 max-w-full px-3 flex-0 ">
                   <div class="mb-6 -mt-6 lg:mb-0 lg:-mt-16">
                     <a href="javascript:;">
-                      <img class="h-auto max-w-full border-2 border-white border-solid rounded-circle" src="/assets/img/team-2.jpg" alt="profile image" />
+                      <img class="h-auto max-w-full border-2 border-white border-solid rounded-circle" src={profileImageSrc} alt="profile image" />
                     </a>
                   </div>
                 </div>

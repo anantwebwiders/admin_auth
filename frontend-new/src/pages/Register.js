@@ -79,32 +79,61 @@ const handleSubmit = async (e) => {
   setErrors({});
   setSuccess('');
 
-  // Run frontend validation
+  // ✅ 1. Frontend validation
   const clientErrors = validateForm();
   if (Object.keys(clientErrors).length > 0) {
     setErrors(clientErrors);
-    return; // Stop the form from submitting to backend
-  }
-
-  const formData = new FormData();
-  for (const key in form) {
-    formData.append(key, form[key]);
+    return;
   }
 
   try {
-    const res = await axios.post(ApiUrls.REGISTER, formData, {
+    let profilePath = '';
+
+    // ✅ 2. If user uploaded profile image, upload it to /api/upload
+    if (form.profile) {
+      const profileData = new FormData();
+      profileData.append('file', form.profile);
+      profileData.append('path', 'upload/userProfile'); // 👈 path passed as field
+
+      const uploadRes = await axios.post(ApiUrls.UPLOAD, profileData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (uploadRes.data.status === 1) {
+        profilePath = uploadRes.data.data.relativePath; // 👈 extract relativePath
+      } else {
+        setErrors({ profile: 'Failed to upload profile picture.' });
+        return;
+      }
+    }
+
+    // ✅ 3. Now submit REGISTER form with profilePath (if any)
+    const registerFormData = new FormData();
+    for (const key in form) {
+      if (key === 'profile') {
+        if (profilePath) {
+          registerFormData.append('profile', profilePath); // use uploaded path
+        }
+      } else {
+        registerFormData.append(key, form[key]);
+      }
+    }
+
+    const res = await axios.post(ApiUrls.REGISTER, registerFormData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     });
 
+    // ✅ 4. Success handling
     setSuccess(res.data.message);
     setTimeout(() => {
       navigate('/login');
     }, 2000);
-  } catch (err) {
-    console.log(err);
 
+  } catch (err) {
+    // ✅ 5. Error handling
+    console.log(err);
     if (err.response?.data?.error && Array.isArray(err.response.data.error)) {
       const errorMap = {};
       err.response.data.error.forEach((e) => {
