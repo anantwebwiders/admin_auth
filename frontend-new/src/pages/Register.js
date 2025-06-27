@@ -10,9 +10,9 @@ const Register = () => {
     const navigate = useNavigate();
     
       useEffect(() => {
-        const user = localStorage.getItem('user');
+        const user = localStorage.getItem('auth_token');
         if (user) {
-         
+          navigate('/dashboard');
         }
       }, []);
      const [form, setForm] = useState({

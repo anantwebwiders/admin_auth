@@ -134,12 +134,7 @@ const handleSubmit = async (e) => {
             </div>
             <ul class="flex flex-row justify-end pl-0 mb-0 list-none md-max:w-full">
              
-              <li class="flex items-center">
-                <a href="/pages/sign-in.html" class="block px-0 py-2 font-semibold text-white transition-all ease-in-out text-sm">
-                  <i class="fa fa-user sm:mr-1" aria-hidden="true"></i>
-                  <span class="hidden sm:inline">Sign In</span>
-                </a>
-              </li>
+              
               <li class="flex items-center pl-4 xl:hidden">
                 <a href="javascript:;" class="block p-0 text-white transition-all ease-in-out text-sm" sidenav-trigger>
                   <div class="w-4.5 overflow-hidden">
