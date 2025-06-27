@@ -8,6 +8,7 @@ const Layout = ({ children }) => {
   const navigate = useNavigate();
 const handleLogout = () => {
   localStorage.removeItem('user');     
+  localStorage.removeItem('auth_token');     
   navigate('/login');                   
 };
 
@@ -43,7 +44,7 @@ const handleLogout = () => {
           </Link>
 </li>
           
-          <li class="mt-0.5 w-full">
+          {/* <li class="mt-0.5 w-full">
             <a class="py-2.7 bg-blue-500/13 dark:text-white dark:opacity-80 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap rounded-lg px-4 font-semibold text-slate-700 transition-colors " href="../pages/tables.html">
               <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
                 <i class="relative top-0 text-sm leading-normal text-orange-500 ni ni-calendar-grid-58"></i>
@@ -77,7 +78,7 @@ const handleLogout = () => {
               </div>
               <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">RTL</span>
             </a>
-          </li>
+          </li> */}
 
           <li class="w-full mt-4">
             <h6 class="pl-6 ml-2 text-xs font-bold leading-tight uppercase dark:text-white opacity-60">Account pages</h6>
@@ -113,7 +114,7 @@ const handleLogout = () => {
             </div>
           </div>
         </div>
-        <a href="https://www.creative-tim.com/learning-lab/tailwind/html/quick-start/argon-dashboard/" target="_blank" class="inline-block w-full px-8 py-2 mb-4 text-xs font-bold leading-normal text-center text-white capitalize transition-all ease-in rounded-lg shadow-md bg-slate-700 bg-150 hover:shadow-xs hover:-translate-y-px">Documentation</a>
+        <Link to="/reset-password" className="inline-block w-full px-8 py-2 mb-4 text-xs font-bold leading-normal text-center text-white capitalize transition-all ease-in rounded-lg shadow-md bg-slate-700 bg-150 hover:shadow-xs hover:-translate-y-px">Reset Password</Link>
         <button onClick={handleLogout} class="inline-block w-full px-8 py-2 text-xs font-bold leading-normal text-center text-white align-middle transition-all ease-in bg-blue-500 border-0 rounded-lg shadow-md select-none bg-150 bg-x-25 hover:shadow-xs hover:-translate-y-px">Logout</button>
       </div>
     </aside>

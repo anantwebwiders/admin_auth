@@ -10,7 +10,8 @@ const { uploadFile , updateProfile , forgetPassword, resetPassword} = require('.
 const authMiddleware = require('../middlewares/auth');
 const auth = require('../middlewares/auth');
 
-router.post('/register', createUserValidator ,upload.single('profile') ,registerUser);
+router.post('/register', upload.single('profile'), createUserValidator, registerUser);
+
 router.post('/login', login);
 router.post('/upload', upload.single('file'), uploadFile);
 router.get('/dashboard', authMiddleware, (req, res) => {

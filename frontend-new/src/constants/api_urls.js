@@ -1,3 +1,4 @@
+// const baseurl="http://localhost:5000/api"
 const baseurl="http://3.110.221.225:5000/api"
 export const ApiUrls = {
     LOGIN: `${baseurl}/login`,
@@ -5,5 +6,7 @@ export const ApiUrls = {
     PROFILE: `${baseurl}/profile`,
     DASHBOARD: `${baseurl}/profile`,
     HOME: "/",
-    NOT_FOUND: "*"
+    NOT_FOUND: "*",
+    FORGET_PASSWORD: `${baseurl}/forget-password`,
+    RESET_PASSWORD: `${baseurl}/reset-password`
 }   

@@ -4,7 +4,22 @@ import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
     const navigate = useNavigate();
-  const [userName, setUserName] = useState('');
+  const [user, setUser] = useState(null);
+
+
+ useEffect(() => {
+  const token = localStorage.getItem('auth_token');
+  const storedUser = localStorage.getItem('auth_user');
+
+  if (!token) {
+    navigate('/login');
+    return; // stop further execution
+  }
+
+  if (storedUser) {
+    setUser(JSON.parse(storedUser));  // ⬅️ Set it in state
+  }
+}, []);
 
   
   return (
@@ -19,7 +34,7 @@ const Dashboard = () => {
               </li>
               <li class="text-sm pl-2 capitalize leading-normal text-white before:float-left before:pr-2 before:text-white before:content-['/']" aria-current="page">Dashboard</li>
             </ol>
-            <h6 class="mb-0 font-bold text-white capitalize"> Hello , welcome to dashboard</h6>
+            <h6 class="mb-0 font-bold text-white capitalize"> Hello, welcome to dashboard {user?.name}</h6>
           </nav>
 
           <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">

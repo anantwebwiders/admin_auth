@@ -2,6 +2,7 @@ import React, { useState,  useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { RoutesPath  } from '../constants/route_paths';
+import { ApiUrls  } from '../constants/api_urls';
  
 
 
@@ -28,6 +29,47 @@ const Register = () => {
 
   const [success, setSuccess] = useState('');
 
+  const validateForm = () => {
+  const newErrors = {};
+
+  if (!form.name.trim()) {
+    newErrors.name = 'Name is required';
+  }
+
+  if (!form.email.trim()) {
+    newErrors.email = 'Email is required';
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    newErrors.email = 'Invalid email format';
+  }
+
+  if (!form.mobile.trim()) {
+    newErrors.mobile = 'Mobile number is required';
+  } else if (!/^[0-9]{10}$/.test(form.mobile)) {
+    newErrors.mobile = 'Mobile number must be 10 digits';
+  }
+
+  if (!form.gender) {
+    newErrors.gender = 'Gender is required';
+  } else if (!['male', 'female', 'other'].includes(form.gender)) {
+    newErrors.gender = 'Invalid gender value';
+  }
+
+  if (!form.password) {
+    newErrors.password = 'Password is required';
+  } else if (form.password.length < 6) {
+    newErrors.password = 'Password must be at least 6 characters';
+  }
+
+  if (!form.confirmPassword) {
+    newErrors.confirmPassword = 'Confirm password is required';
+  } else if (form.password !== form.confirmPassword) {
+    newErrors.confirmPassword = 'Passwords do not match';
+  }
+
+  return newErrors;
+};
+
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -37,28 +79,44 @@ const handleSubmit = async (e) => {
   setErrors({});
   setSuccess('');
 
+  // Run frontend validation
+  const clientErrors = validateForm();
+  if (Object.keys(clientErrors).length > 0) {
+    setErrors(clientErrors);
+    return; // Stop the form from submitting to backend
+  }
+
   const formData = new FormData();
   for (const key in form) {
     formData.append(key, form[key]);
   }
 
   try {
-    const res = await axios.post('http://localhost:5000/api/register', formData, {
+    const res = await axios.post(ApiUrls.REGISTER, formData, {
       headers: {
-        'Content-Type': 'multipart/form-data'
-      }
+        'Content-Type': 'multipart/form-data',
+      },
     });
 
     setSuccess(res.data.message);
     setTimeout(() => {
       navigate('/login');
     }, 2000);
-
   } catch (err) {
-    if (err.response?.status === 422) {
-      setErrors(err.response.data.errors || {});
+    console.log(err);
+
+    if (err.response?.data?.error && Array.isArray(err.response.data.error)) {
+      const errorMap = {};
+      err.response.data.error.forEach((e) => {
+        if (!errorMap[e.field]) {
+          errorMap[e.field] = e.message;
+        }
+      });
+      setErrors(errorMap);
     } else {
-      setErrors({ general: err.response?.data?.message || 'Something went wrong!' });
+      setErrors({
+        general: err.response?.data?.message || 'Something went wrong!',
+      });
     }
   }
 };
@@ -191,7 +249,7 @@ const handleSubmit = async (e) => {
 
                   {/* Name */}
                   <div className="mb-4">
-                    <input type="text" name="name" placeholder="Name" value={form.name} onChange={handleChange}
+                    <input type="text" name="name"  placeholder="Name" value={form.name} onChange={handleChange}
                       className="placeholder:text-gray-500 text-sm block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-gray-700 focus:border-blue-500 focus:outline-none"
                       aria-label="Name" />
                       {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
@@ -201,7 +259,7 @@ const handleSubmit = async (e) => {
 
                   {/* Email */}
                   <div className="mb-4">
-                    <input type="email" name="email" placeholder="Email" value={form.email} onChange={handleChange}
+                    <input type="email" name="email"   placeholder="Email" value={form.email} onChange={handleChange}
                       className="placeholder:text-gray-500 text-sm block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-gray-700 focus:border-blue-500 focus:outline-none"
                       aria-label="Email" />
                       {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -210,7 +268,7 @@ const handleSubmit = async (e) => {
 
                   {/* Mobile Number */}
                   <div className="mb-4">
-                    <input type="text" name="mobile" placeholder="Mobile Number" value={form.mobile} onChange={handleChange}
+                    <input type="text" name="mobile"   placeholder="Mobile Number" value={form.mobile} onChange={handleChange}
                       className="placeholder:text-gray-500 text-sm block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-gray-700 focus:border-blue-500 focus:outline-none"
                       aria-label="Mobile Number" />
                       {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
@@ -221,15 +279,15 @@ const handleSubmit = async (e) => {
                     <label className="block mb-1 text-sm font-medium text-gray-700">Gender:</label>
                     <div className="flex gap-4">
                       <label>
-                        <input type="radio" name="gender" value="male" checked={form.gender === 'male'} onChange={handleChange} />
+                        <input type="radio" name="gender"   value="male" checked={form.gender === 'male'} onChange={handleChange} />
                         <span className="ml-2 text-sm">Male</span>
                       </label>
                       <label>
-                        <input type="radio" name="gender" value="female" checked={form.gender === 'female'} onChange={handleChange} />
+                        <input type="radio" name="gender"   value="female" checked={form.gender === 'female'} onChange={handleChange} />
                         <span className="ml-2 text-sm">Female</span>
                       </label>
                       <label>
-                        <input type="radio" name="gender" value="other" checked={form.gender === 'other'} onChange={handleChange} />
+                        <input type="radio" name="gender"   value="other" checked={form.gender === 'other'} onChange={handleChange} />
                         <span className="ml-2 text-sm">Other</span>
                       </label>
                     </div>
@@ -245,7 +303,7 @@ const handleSubmit = async (e) => {
 
                   {/* Password */}
                   <div className="mb-4">
-                    <input type="password" name="password" placeholder="Password" value={form.password} onChange={handleChange}
+                    <input type="password" name="password"   placeholder="Password" value={form.password} onChange={handleChange}
                       className="placeholder:text-gray-500 text-sm block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-gray-700 focus:border-blue-500 focus:outline-none"
                       aria-label="Password" />
                       {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
@@ -253,7 +311,7 @@ const handleSubmit = async (e) => {
 
                   {/* Confirm Password */}
                   <div className="mb-4">
-                    <input type="password" name="confirmPassword" placeholder="Confirm Password" value={form.confirmPassword} onChange={handleChange}
+                    <input type="password" name="confirmPassword"   placeholder="Confirm Password" value={form.confirmPassword} onChange={handleChange}
                       className="placeholder:text-gray-500 text-sm block w-full rounded-lg border border-gray-300 bg-white py-2 px-3 text-gray-700 focus:border-blue-500 focus:outline-none"
                       aria-label="Confirm Password" />
                       {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}

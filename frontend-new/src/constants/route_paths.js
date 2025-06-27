@@ -4,6 +4,8 @@ export const RoutesPath = {
     PROFILE: "/profile",
     DASHBOARD: "/dashboard",
     HOME: "/",
-    NOT_FOUND: "*"
+    NOT_FOUND: "*",
+    FORGET_PASSWORD: "/forget-password",
+    RESET_PASSWORD: "/reset-password"
 
 }
