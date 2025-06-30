@@ -1,23 +1,33 @@
 import React,{ useState,  useEffect } from 'react';
 import Layout from '../components/Layout';
 import { useNavigate } from 'react-router-dom';
+import { RoutesPath } from '../constants/route_paths';
 
 const Dashboard = () => {
     const navigate = useNavigate();
   const [user, setUser] = useState(null);
 
 
- useEffect(() => {
+useEffect(() => {
   const token = localStorage.getItem('auth_token');
   const storedUser = localStorage.getItem('auth_user');
 
   if (!token) {
     navigate('/login');
-    return; // stop further execution
+    return; // ⛔ Stop if not logged in
   }
 
   if (storedUser) {
-    setUser(JSON.parse(storedUser));  // ⬅️ Set it in state
+    const parsedUser = JSON.parse(storedUser); // ✅ parse string into object
+
+    // ✅ Check if email is not verified
+    if (parsedUser.email_verified === false) {
+      navigate(RoutesPath.RESEND_VERIFY_EMAIL);
+      return;
+    }
+
+    // ✅ Set user in state
+    setUser(parsedUser);
   }
 }, []);
 

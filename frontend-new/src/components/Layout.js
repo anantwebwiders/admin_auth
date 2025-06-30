@@ -7,7 +7,7 @@ const Layout = ({ children }) => {
 
   const navigate = useNavigate();
 const handleLogout = () => {
-  localStorage.removeItem('user');     
+  localStorage.removeItem('auth_user');     
   localStorage.removeItem('auth_token');     
   navigate('/login');                   
 };

@@ -19,3 +19,21 @@ exports.login = async (req, res) => {
     return sendError(res, 'Internal Server Error', process.env.NODE_ENV === 'development' ? error.message : undefined, 500);
   }
 };
+
+exports.verifyEmail = async (req, res) => {
+  try {
+    return await authService.verifyEmail(req.params.token, res); 
+  } catch (error) {
+    console.error('Verify Email Error:', error);
+    return sendError(res, 'Internal Server Error', process.env.NODE_ENV === 'development' ? error.message : undefined, 500);
+  }
+};
+
+exports.resendVerificationLink = async (req, res) => {
+  try {
+    return await authService.resendVerificationLink(req.userData, res); 
+  } catch (error) {
+    console.error('Resend Verification Link Error:', error);
+    return sendError(res, 'Internal Server Error', process.env.NODE_ENV === 'development' ? error.message : undefined, 500);
+  }
+};

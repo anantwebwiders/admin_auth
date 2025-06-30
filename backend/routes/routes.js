@@ -5,7 +5,7 @@ const { sendSuccess } = require('../utils/helper');
 const  { createUserValidator }  = require('../request/registerRequest');
 const { resetPasswordValidator } = require('../request/resetPasswordRequest');
 const { updateProfileValidator } = require('../request/updateProfileRequest');
-const { registerUser, login  } = require('../controllers/authController');
+const { registerUser, login, verifyEmail, resendVerificationLink  } = require('../controllers/authController');
 const { uploadFile , updateProfile , forgetPassword, resetPassword} = require('../controllers/userController');
 const authMiddleware = require('../middlewares/auth');
 const auth = require('../middlewares/auth');
@@ -35,5 +35,7 @@ router.get('/me', authMiddleware, async (req, res) => {
 router.put('/update-profile', authMiddleware, upload.single('profile'), updateProfileValidator ,updateProfile);
 router.post('/forget-password', forgetPassword);
 router.put('/reset-password', authMiddleware, resetPasswordValidator ,resetPassword);
+router.get('/verify-email/:token', verifyEmail);
+router.post('/resend-verify-email', authMiddleware, resendVerificationLink);
 
 module.exports = router;

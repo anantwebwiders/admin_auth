@@ -44,6 +44,18 @@ async updateProfile(userId, profileData) {
   }
 }
 
+async findBytoken(token) {
+    try {
+      return await this.model.findOne({
+        where: { verification_token: token } // token field from DB
+      });
+    } catch (error) {
+      console.error('UserRepository.findBytoken Error:', error);
+      throw error;
+    }
+  }
+
+
 }
 
 module.exports = new UserRepository();

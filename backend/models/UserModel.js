@@ -28,6 +28,16 @@ const User = db.define('User', {
   profile: {
     type: DataTypes.STRING,
     allowNull: true
+  },
+  email_verified: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  },
+  verification_token: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    unique: true
   }
 }, {
   tableName: 'users', // must match your migration table name
