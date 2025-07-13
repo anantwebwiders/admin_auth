@@ -10,6 +10,10 @@ const { uploadFile , updateProfile , forgetPassword, resetPassword} = require('.
 const authMiddleware = require('../middlewares/auth');
 const auth = require('../middlewares/auth');
 const User = require('../repositories/userRepository');
+const {categorievalidate} = require('../request/categoryRequest');
+const {productRequest} = require('../request/productRequest');
+const {createCategory, getcategories, updateCategory, deleteCategory} = require('../controllers/categoryController');
+const {createProduct, getProducts, updateProduct, deleteProduct} = require('../controllers/productController');
 
 router.post('/register', upload.single('profile'), createUserValidator, registerUser);
 
@@ -37,5 +41,19 @@ router.post('/forget-password', forgetPassword);
 router.put('/reset-password', authMiddleware, resetPasswordValidator ,resetPassword);
 router.get('/verify-email/:token', verifyEmail);
 router.post('/resend-verify-email', authMiddleware, resendVerificationLink);
+
+// Categories
+router.post('/categories/create', authMiddleware, categorievalidate, createCategory);
+router.get('/categories', authMiddleware, getcategories);
+router.put('/categories/:id', authMiddleware, categorievalidate, updateCategory);
+router.delete('/categories/:id', authMiddleware, deleteCategory);
+
+// products
+
+router.post('/products', authMiddleware, productRequest, createProduct);
+router.get('/products', authMiddleware, getProducts);
+router.put('/products/:id', authMiddleware, productRequest, updateProduct);
+router.delete('/products/:id', authMiddleware, deleteProduct);
+
 
 module.exports = router;
