@@ -12,7 +12,13 @@ module.exports = (req, res, next) => {
     const token = authHeader.split(' ')[1];
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    req.userData = decoded;
+    // ✅ Store all essential info in req.userData
+    req.userData = {
+      id: decoded.id,
+      email: decoded.email,
+      role: decoded.role,
+    };
+
     next();
   } catch (error) {
     return sendError(res, 'Authentication failed', error.message, 401);

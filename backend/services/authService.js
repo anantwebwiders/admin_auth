@@ -228,12 +228,13 @@ exports.loginUser = async (userData, res) => {
       {
         id: user.id,
         email: user.email,
-        name: user.name
+        name: user.name,
+        role: user.role,
       },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-
+// console.log(user);
     const userDataToReturn = {
       id: user.id,
       name: user.name,
@@ -241,6 +242,7 @@ exports.loginUser = async (userData, res) => {
       profile: user.profile,
       mobile: user.mobile,
       gender: user.gender,
+      role: user.role,
       email_verified: user.email_verified,
       token
     };

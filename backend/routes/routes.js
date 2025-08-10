@@ -8,18 +8,20 @@ const { updateProfileValidator } = require('../request/updateProfileRequest');
 const { registerUser, login, verifyEmail, resendVerificationLink  } = require('../controllers/authController');
 const { uploadFile , updateProfile , forgetPassword, resetPassword} = require('../controllers/userController');
 const authMiddleware = require('../middlewares/auth');
+const allowRoles = require('../middlewares/roleMiddleware');
 const auth = require('../middlewares/auth');
 const User = require('../repositories/userRepository');
 const {categorievalidate} = require('../request/categoryRequest');
 const {productRequest} = require('../request/productRequest');
 const {createCategory, getcategories, updateCategory, deleteCategory} = require('../controllers/categoryController');
-const {createProduct, getProducts, updateProduct, deleteProduct} = require('../controllers/productController');
+const {createProduct, getProducts, updateProduct, deleteProduct, createOrder, getOrders, allOrders, createReview, getReviews} = require('../controllers/productController');
+const {orderRequest} = require('../request/orderRequest');
 
 router.post('/register', upload.single('profile'), createUserValidator, registerUser);
 
-router.post('/login', login);
+router.post('/login',login);
 router.post('/upload', upload.single('file'), uploadFile);
-router.get('/dashboard', authMiddleware, (req, res) => {
+router.get('/dashboard', authMiddleware,(req, res) => {
   return sendSuccess(res, 'Welcome to dashboard', req.userData);
 });
 router.get('/me', authMiddleware, async (req, res) => {
@@ -54,6 +56,18 @@ router.post('/products', authMiddleware, productRequest, createProduct);
 router.get('/products', authMiddleware, getProducts);
 router.put('/products/:id', authMiddleware, productRequest, updateProduct);
 router.delete('/products/:id', authMiddleware, deleteProduct);
+
+// orders
+
+router.post('/orders', authMiddleware, allowRoles('user'), orderRequest, createOrder)
+router.get('/orders', authMiddleware, allowRoles('admin', 'seller'), allOrders)
+router.get('/orders/user', authMiddleware, allowRoles('user'), getOrders)
+
+// reviews
+router.post('/reviews', authMiddleware, allowRoles('user'), createReview)
+router.get('/reviews/:id', authMiddleware, getReviews)
+
+
 
 
 module.exports = router;

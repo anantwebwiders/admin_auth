@@ -77,6 +77,19 @@ class BaseRepository {
       throw error;
     }
   }
+
+  // find by where
+async findByWhere(where, res = null) {
+  try {
+    return await this.model.findAll({ where });
+  } catch (error) {
+    console.error('BaseRepository.findByWhere Error:', error);
+    if (res) return sendError(res, 'Error fetching records', error.message);
+    throw error;
+  }
 }
+}
+
+
 
 module.exports = BaseRepository;

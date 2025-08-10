@@ -5,8 +5,9 @@ exports.sendSuccess = (res, message = "Success", data = null, statusCode = 200) 
   return res.status(statusCode).json({
     status: 1,
     message,
-    error: null,
     data,
+    error: null,
+
   });
 };
 

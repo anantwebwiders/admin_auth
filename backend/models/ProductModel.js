@@ -37,6 +37,11 @@ const Product = db.define('Product', {
   timestamps: true
 });
 
-
+Product.associate = (models) => {
+  Product.hasMany(models.Order, {
+    foreignKey: 'product_id',
+    as: 'orders'
+  });
+};
 
 module.exports = Product;

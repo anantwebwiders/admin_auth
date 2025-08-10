@@ -38,13 +38,23 @@ const User = db.define('User', {
     type: DataTypes.STRING,
     allowNull: true,
     unique: true
-  }
+  },
+    role: {
+    type: DataTypes.ENUM('admin', 'seller', 'user'), // 👈 Add this
+    allowNull: false,
+    defaultValue: 'user',
+  },
 }, {
   tableName: 'users', // must match your migration table name
   timestamps: true, // adds createdAt and updatedAt
 });
 
 // Test the model
-
+User.associate = (models) => {
+  User.hasMany(models.Order, {
+    foreignKey: 'user_id',
+    as: 'orders'
+  });
+};
 
 module.exports = User;
