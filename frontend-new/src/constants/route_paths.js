@@ -12,5 +12,7 @@ export const RoutesPath = {
     PRODUCTS: "/products",
     ALL_PRODUCTS: "/all-products",
     CREATE_CATEGORY: "/create-category",
-    ALL_CATEGORIES: "/all-categories"
+    ALL_CATEGORIES: "/all-categories",
+    ECOMMERCE_PRODUCTS: "/shop",
+    ALL_ORDERS: "/all-orders"
 }

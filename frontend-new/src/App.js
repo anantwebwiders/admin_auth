@@ -15,6 +15,8 @@ import Products from "./pages/Products";
 import AllProducts from "./pages/AllProducts"; // Add this import
 import CreateCategory from "./pages/CreateCategory"; // Add this import
 import AllCategories from "./pages/AllCategories"; // Add this import
+import EcommerceProducts from "./pages/EcommerceProducts"; // Add this import
+import AllOrders from "./pages/AllOrders"; // Add this import
 
 function App() {
      const [user, setUser] = useState(null);
@@ -42,6 +44,8 @@ function App() {
         <Route path={RoutesPath.ALL_PRODUCTS} element={<AllProducts />} /> {/* Add this line */}
         <Route path={RoutesPath.CREATE_CATEGORY} element={<CreateCategory />} /> {/* Add this line */}
         <Route path={RoutesPath.ALL_CATEGORIES} element={<AllCategories />} /> {/* Add this line */}
+        <Route path={RoutesPath.ECOMMERCE_PRODUCTS} element={<EcommerceProducts />} /> {/* Add this line */}
+        <Route path={RoutesPath.ALL_ORDERS} element={<AllOrders />} /> {/* Add this line */}
       </Routes>
     </Router>
   );

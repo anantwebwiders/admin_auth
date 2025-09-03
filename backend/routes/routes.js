@@ -60,7 +60,7 @@ router.delete('/products/:id', authMiddleware, deleteProduct);
 // orders
 
 router.post('/orders', authMiddleware, allowRoles('user'), orderRequest, createOrder)
-router.get('/orders', authMiddleware, allowRoles('admin', 'seller'), allOrders)
+router.get('/orders', authMiddleware, allowRoles('admin', 'seller' ,'user'), allOrders)
 router.get('/orders/user', authMiddleware, allowRoles('user'), getOrders)
 
 // reviews
