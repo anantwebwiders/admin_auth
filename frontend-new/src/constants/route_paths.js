@@ -11,5 +11,6 @@ export const RoutesPath = {
     RESEND_VERIFY_EMAIL: "/resend-verify-email",
     PRODUCTS: "/products",
     ALL_PRODUCTS: "/all-products",
-    CREATE_CATEGORY: "/create-category"
+    CREATE_CATEGORY: "/create-category",
+    ALL_CATEGORIES: "/all-categories"
 }

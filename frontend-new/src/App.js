@@ -14,6 +14,7 @@ import RsendVerifyEmail from "./pages/RsendVerifyEmail";
 import Products from "./pages/Products";
 import AllProducts from "./pages/AllProducts"; // Add this import
 import CreateCategory from "./pages/CreateCategory"; // Add this import
+import AllCategories from "./pages/AllCategories"; // Add this import
 
 function App() {
      const [user, setUser] = useState(null);
@@ -40,6 +41,7 @@ function App() {
         <Route path="/products" element={<Products />} /> {/* Add this line for direct /products route */}
         <Route path={RoutesPath.ALL_PRODUCTS} element={<AllProducts />} /> {/* Add this line */}
         <Route path={RoutesPath.CREATE_CATEGORY} element={<CreateCategory />} /> {/* Add this line */}
+        <Route path={RoutesPath.ALL_CATEGORIES} element={<AllCategories />} /> {/* Add this line */}
       </Routes>
     </Router>
   );
