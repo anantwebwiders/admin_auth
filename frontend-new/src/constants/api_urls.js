@@ -17,4 +17,5 @@ export const ApiUrls = {
     PRODUCTS: `${baseurl}/products`,
     CREATE_PRODUCT: `${baseurl}/products/create`,
     ALL_PRODUCTS: `${baseurl}/products`, // Add this line
+    CREATE_CATEGORY: `${baseurl}/categories/create`,
 }

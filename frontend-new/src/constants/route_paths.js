@@ -10,5 +10,6 @@ export const RoutesPath = {
     VERIFY_EMAIL: "/verify-email/:token",
     RESEND_VERIFY_EMAIL: "/resend-verify-email",
     PRODUCTS: "/products",
-    ALL_PRODUCTS: "/all-products"
+    ALL_PRODUCTS: "/all-products",
+    CREATE_CATEGORY: "/create-category"
 }
