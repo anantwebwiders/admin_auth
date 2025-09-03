@@ -8,5 +8,7 @@ export const RoutesPath = {
     FORGET_PASSWORD: "/forget-password",
     RESET_PASSWORD: "/reset-password",
     VERIFY_EMAIL: "/verify-email/:token",
-    RESEND_VERIFY_EMAIL: "/resend-verify-email"
+    RESEND_VERIFY_EMAIL: "/resend-verify-email",
+    PRODUCTS: "/products",
+    ALL_PRODUCTS: "/all-products"
 }

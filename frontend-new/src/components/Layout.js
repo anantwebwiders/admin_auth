@@ -66,12 +66,23 @@ const handleLogout = () => {
             <li class="mt-0.5 w-full">
               <Link
                 to="/products"
-                className="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors dark:text-white text-black" // Changed dark:opacity-80 to text-black
+                className="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors dark:text-white text-black"
               >
                 <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
                   <i class="relative top-0 text-sm leading-normal text-black ni ni-single-02"></i> {/* Changed text-slate-700 to text-black */}
                 </div>
                 <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">Product Management</span>
+              </Link>
+            </li>
+            <li class="mt-0.5 w-full">
+              <Link
+                to="/all-products"
+                className="py-2.7 text-sm ease-nav-brand my-0 mx-2 flex items-center whitespace-nowrap px-4 transition-colors dark:text-white text-black"
+              >
+                <div class="mr-2 flex h-8 w-8 items-center justify-center rounded-lg bg-center stroke-0 text-center xl:p-2.5">
+                  <i class="relative top-0 text-sm leading-normal text-blue-500 ni ni-basket"></i>
+                </div>
+                <span class="ml-1 duration-300 opacity-100 pointer-events-none ease">All Products</span>
               </Link>
             </li>
           </ul>

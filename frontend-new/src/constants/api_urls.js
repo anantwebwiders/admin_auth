@@ -16,4 +16,5 @@ export const ApiUrls = {
     RESEND_VERIFY_EMAIL: `${baseurl}/resend-verify-email`,
     PRODUCTS: `${baseurl}/products`,
     CREATE_PRODUCT: `${baseurl}/products/create`,
+    ALL_PRODUCTS: `${baseurl}/products`, // Add this line
 }
