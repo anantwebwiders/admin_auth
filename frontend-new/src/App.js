@@ -11,6 +11,7 @@ import { RoutesPath } from "./constants/route_paths";
 import axios from "axios";
 import { fetchUserData } from "./services/authService";
 import RsendVerifyEmail from "./pages/RsendVerifyEmail";
+import Products from "./pages/Products";
 
 function App() {
      const [user, setUser] = useState(null);
@@ -33,6 +34,8 @@ function App() {
         <Route path={RoutesPath.RESET_PASSWORD} element={<RESET_PASSWORD />} />
         <Route path={RoutesPath.VERIFY_EMAIL} element={<VerifyEmailPage />} />
        <Route path={RoutesPath.RESEND_VERIFY_EMAIL} element={<RsendVerifyEmail />} />
+        <Route path={RoutesPath.PRODUCTS} element={<Products />} />
+        <Route path="/products" element={<Products />} /> {/* Add this line for direct /products route */}
       </Routes>
     </Router>
   );

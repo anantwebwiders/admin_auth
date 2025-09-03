@@ -4,8 +4,8 @@ require('dotenv').config();
 
 const sequelize = new Sequelize(
   process.env.DB_NAME || 'admin_node',
-  process.env.DB_USER || 'anant',
-  process.env.DB_PASS || '123456', 
+  process.env.DB_USER || 'root',
+  process.env.DB_PASS, 
   {
     host: process.env.DB_HOST || 'localhost',
     dialect: process.env.DB_DIALECT || 'mysql',

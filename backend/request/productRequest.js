@@ -23,8 +23,7 @@ const productRequest = [
     .isString().withMessage('SKU must be a string'),
 
   body('imageUrl')
-    .optional()
-    .isURL().withMessage('Image URL must be a valid URL'),
+    .optional(),
 
   body('categoryId')
     .notEmpty().withMessage('Category ID is required')

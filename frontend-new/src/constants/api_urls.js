@@ -1,5 +1,5 @@
-// const baseurl="http://localhost:5000/api"
-const baseurl="http://3.110.221.225:5000/api"
+const baseurl="http://localhost:5000/api"
+// const baseurl="http://3.110.221.225:5000/api"
 export const ApiUrls = {
     LOGIN: `${baseurl}/login`,
     REGISTER: `${baseurl}/register`,
@@ -13,5 +13,7 @@ export const ApiUrls = {
     UPDATE_PROFILE: `${baseurl}/update-profile`,
     UPLOAD: `${baseurl}/upload`,
     VERIFY_EMAIL: `${baseurl}/verify-email/`,
-    RESEND_VERIFY_EMAIL: `${baseurl}/resend-verify-email`
-}   
+    RESEND_VERIFY_EMAIL: `${baseurl}/resend-verify-email`,
+    PRODUCTS: `${baseurl}/products`,
+    CREATE_PRODUCT: `${baseurl}/products/create`,
+}

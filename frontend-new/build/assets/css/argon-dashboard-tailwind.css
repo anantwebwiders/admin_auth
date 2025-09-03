@@ -225,6 +225,28 @@ select {
   text-transform: none;
 }
 
+.global-heading {
+  color: #000000 !important;
+  font-weight: bold;
+}
+
+/* Or target all heading elements */
+h1, h2, h3, h4, h5 {
+  color: #000000 !important;
+}
+
+.font-semibold{
+  color:black ;
+}
+
+.font-bold{
+  color:black ;
+}
+
+.ml-1{
+  color:black ;
+}
+
 /*
 1. Correct the inability to style clickable types in iOS and Safari.
 2. Remove default button styles.

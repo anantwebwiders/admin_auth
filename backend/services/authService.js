@@ -34,8 +34,8 @@ exports.register = async (userData, file, res) => {
     });
 
     // Compose verification link
-    // const verificationLink = `http://localhost:3000/verify-email/${verificationToken}`;
-    const verificationLink = `http://3.110.221.225/verify-email/${verificationToken}`;
+    const verificationLink = `http://localhost:3000/verify-email/${verificationToken}`;
+    // const verificationLink = `http://3.110.221.225/verify-email/${verificationToken}`;
 
     // Send email with button
     await sendMail({
@@ -305,8 +305,8 @@ exports.resendVerificationLink = async (userData, res) => {
     );
     const verificationToken = crypto.randomBytes(32).toString('hex');
 
-    // const verificationLink = `http://localhost:3000/verify-email/${verificationToken}`;
-    const verificationLink = `http://3.110.221.225/verify-email/${verificationToken}`;
+    const verificationLink = `http://localhost:3000/verify-email/${verificationToken}`;
+    // const verificationLink = `http://3.110.221.225/verify-email/${verificationToken}`;
 
     
         await UserRepository.update(user.id, {
